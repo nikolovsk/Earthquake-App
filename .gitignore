@@ -1,0 +1,13 @@
+# Java / Spring Boot
+target/
+*.iml
+*.class
+*.jar
+*.war
+.idea/
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/vite-env.d.ts
