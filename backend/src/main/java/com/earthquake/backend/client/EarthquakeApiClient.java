@@ -1,7 +1,6 @@
 package com.earthquake.backend.client;
 
 import com.earthquake.backend.dto.api.EarthquakeApiResponse;
-import com.earthquake.backend.exception.ExternalApiException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,15 +16,11 @@ public class EarthquakeApiClient {
     }
 
     public EarthquakeApiResponse fetchEarthquakeData() {
-        try {
-            return webClient
-                    .get()
-                    .uri(url)
-                    .retrieve()
-                    .bodyToMono(EarthquakeApiResponse.class)
-                    .block();
-        } catch (Exception ex) {
-            throw new ExternalApiException();
-        }
+        return webClient
+                .get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(EarthquakeApiResponse.class)
+                .block();
     }
 }

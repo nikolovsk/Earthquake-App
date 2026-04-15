@@ -5,6 +5,7 @@ import com.earthquake.backend.dto.EarthquakeDto;
 import com.earthquake.backend.dto.api.EarthquakeApiResponse;
 import com.earthquake.backend.dto.api.Feature;
 import com.earthquake.backend.exception.EarthquakeNotFoundException;
+import com.earthquake.backend.exception.ExternalApiException;
 import com.earthquake.backend.mapper.EarthquakeMapper;
 import com.earthquake.backend.model.Earthquake;
 import com.earthquake.backend.repository.EarthquakeJpaRepository;
@@ -39,12 +40,22 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     public void refreshEarthquakes() {
         EarthquakeApiResponse response = apiClient.fetchEarthquakeData();
 
+        if (response == null || response.features() == null) {
+            throw new ExternalApiException();
+        }
+
         earthquakeRepository.deleteAll();
 
         List<Earthquake> earthquakes = response.features()
                 .stream()
                 .map(Feature::properties)
-                .filter(p -> p.magnitude() != null)
+                .filter(p ->
+                        p.magnitude() != null &&
+                        p.magType() != null &&
+                        p.place() != null &&
+                        p.title() != null &&
+                        p.time() != null
+                )
                 .map(mapper::toEntity)
                 .toList();
 
