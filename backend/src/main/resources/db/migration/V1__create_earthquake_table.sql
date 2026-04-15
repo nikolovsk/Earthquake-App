@@ -1,0 +1,8 @@
+CREATE TABLE earthquake (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    magnitude DOUBLE PRECISION,
+    mag_type VARCHAR(50),
+    place TEXT NOT NULL,
+    title TEXT NOT NULL,
+    time BIGINT NOT NULL
+);
