@@ -10,4 +10,6 @@ public interface EarthquakeService {
     void refreshEarthquakes();
 
     List<EarthquakeDto> filter(Double magnitude, Long time);
+
+    void deleteById(Long id);
 }

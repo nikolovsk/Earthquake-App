@@ -4,6 +4,7 @@ import com.earthquake.backend.client.EarthquakeApiClient;
 import com.earthquake.backend.dto.EarthquakeDto;
 import com.earthquake.backend.dto.api.EarthquakeApiResponse;
 import com.earthquake.backend.dto.api.Feature;
+import com.earthquake.backend.exception.EarthquakeNotFoundException;
 import com.earthquake.backend.mapper.EarthquakeMapper;
 import com.earthquake.backend.model.Earthquake;
 import com.earthquake.backend.repository.EarthquakeJpaRepository;
@@ -59,5 +60,13 @@ public class EarthquakeServiceImpl implements EarthquakeService {
         List<Earthquake> earthquakes = earthquakeRepository.findAll(spec);
 
         return mapper.toDtoList(earthquakes);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Earthquake earthquake = earthquakeRepository.findById(id)
+                .orElseThrow(() -> new EarthquakeNotFoundException(id));
+
+        earthquakeRepository.delete(earthquake);
     }
 }
