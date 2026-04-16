@@ -1,6 +1,7 @@
 package com.earthquake.backend.dto;
 
 public record EarthquakeDto(
+        Long id,
         Double magnitude,
         String magType,
         String place,

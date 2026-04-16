@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { Earthquake } from "../types/earthquake"
-import {filterEarthquakes, getAllEarthquakes, refreshEarthquakes} from "../api/earthquakeApi"
+import {deleteEarthquake, filterEarthquakes, getAllEarthquakes, refreshEarthquakes} from "../api/earthquakeApi"
 import EarthquakeTable from "../components/EarthquakeTable";
 import EarthquakeFilter from "../components/EarthquakeFilter";
 
@@ -59,6 +59,15 @@ export default function HomePage() {
         }
     }
 
+    const handleDelete = async (id: number) => {
+        try {
+            await deleteEarthquake(id)
+            setData(prev => prev.filter(e => e.id !== id))
+        } catch {
+            setError("Failed to delete earthquake.")
+        }
+    }
+
     return (
         <div className="page">
             <h1 className="title">Earthquakes Monitoring Application</h1>
@@ -89,7 +98,7 @@ export default function HomePage() {
             )}
 
             {!loading && !error && data.length > 0 && (
-                <EarthquakeTable earthquakes={data} />
+                <EarthquakeTable earthquakes={data} onDelete={handleDelete} />
             )}
         </div>
     )

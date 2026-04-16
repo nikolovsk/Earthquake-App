@@ -2,9 +2,10 @@ import type { Earthquake } from "../types/earthquake"
 
 interface Props {
     earthquakes: Earthquake[]
+    onDelete: (id: number) => void
 }
 
-export default function EarthquakeTable({ earthquakes }: Props) {
+export default function EarthquakeTable({ earthquakes, onDelete }: Props) {
     return (
         <table
             border={1}
@@ -21,6 +22,7 @@ export default function EarthquakeTable({ earthquakes }: Props) {
                 <th>Place</th>
                 <th>Title</th>
                 <th>Time</th>
+                <th>Action</th>
             </tr>
             </thead>
 
@@ -32,6 +34,14 @@ export default function EarthquakeTable({ earthquakes }: Props) {
                     <td>{e.place}</td>
                     <td>{e.title}</td>
                     <td>{new Date(e.time).toLocaleString()}</td>
+                    <td>
+                        <button
+                            onClick={() => onDelete(e.id)}
+                            style={{ background: "red" }}
+                        >
+                            Delete
+                        </button>
+                    </td>
                 </tr>
             ))}
             </tbody>
