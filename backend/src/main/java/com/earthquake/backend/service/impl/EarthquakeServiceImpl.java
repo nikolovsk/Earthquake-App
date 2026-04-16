@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EarthquakeServiceImpl implements EarthquakeService {
@@ -44,11 +45,13 @@ public class EarthquakeServiceImpl implements EarthquakeService {
             throw new ExternalApiException();
         }
 
-        earthquakeRepository.deleteAll();
+        earthquakeRepository.deleteAllInBatch();
 
         List<Earthquake> earthquakes = response.features()
                 .stream()
+                .filter(Objects::nonNull)
                 .map(Feature::properties)
+                .filter(Objects::nonNull)
                 .filter(p ->
                         p.magnitude() != null &&
                         p.magType() != null &&
