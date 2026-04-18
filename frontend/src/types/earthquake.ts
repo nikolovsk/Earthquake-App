@@ -5,4 +5,6 @@ export interface Earthquake {
     place: string
     title: string
     time: number
+    latitude: number
+    longitude: number
 }

@@ -3,6 +3,7 @@ import type { Earthquake } from "../types/earthquake"
 import {deleteEarthquake, filterEarthquakes, getAllEarthquakes, refreshEarthquakes} from "../api/earthquakeApi"
 import EarthquakeTable from "../components/EarthquakeTable";
 import EarthquakeFilter from "../components/EarthquakeFilter";
+import EarthquakeMap from "../components/EarthquakeMap.tsx";
 
 export default function HomePage() {
     const [data, setData] = useState<Earthquake[]>([])
@@ -98,7 +99,11 @@ export default function HomePage() {
             )}
 
             {!loading && !error && data.length > 0 && (
-                <EarthquakeTable earthquakes={data} onDelete={handleDelete} />
+                <div>
+                    <EarthquakeTable earthquakes={data} onDelete={handleDelete} />
+
+                    <EarthquakeMap earthquakes={data} />
+                </div>
             )}
         </div>
     )

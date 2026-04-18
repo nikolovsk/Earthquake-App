@@ -14,6 +14,7 @@ import com.earthquake.backend.service.EarthquakeService;
 import com.earthquake.backend.specification.EarthquakeSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,14 +40,16 @@ public class EarthquakeServiceImpl implements EarthquakeService {
     }
 
     @Override
-    public void refreshEarthquakes() {
+    @Transactional
+    public synchronized void refreshEarthquakes() {
         EarthquakeApiResponse response = apiClient.fetchEarthquakeData();
 
         if (response == null || response.features() == null) {
             throw new ExternalApiException();
         }
 
-        earthquakeRepository.deleteAllInBatch();
+        earthquakeRepository.deleteAll();
+        earthquakeRepository.flush();
 
         List<Earthquake> earthquakes = response.features()
                 .stream()
