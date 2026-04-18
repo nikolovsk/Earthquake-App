@@ -27,4 +27,8 @@ public class Earthquake {
     private String title;
 
     private Long time;
+
+    private Double latitude;
+
+    private Double longitude;
 }

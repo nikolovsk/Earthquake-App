@@ -3,7 +3,8 @@ package com.earthquake.backend.service.impl;
 import com.earthquake.backend.client.EarthquakeApiClient;
 import com.earthquake.backend.dto.EarthquakeDto;
 import com.earthquake.backend.dto.api.EarthquakeApiResponse;
-import com.earthquake.backend.dto.api.Feature;
+import com.earthquake.backend.dto.api.Geometry;
+import com.earthquake.backend.dto.api.Properties;
 import com.earthquake.backend.exception.EarthquakeNotFoundException;
 import com.earthquake.backend.exception.ExternalApiException;
 import com.earthquake.backend.mapper.EarthquakeMapper;
@@ -50,16 +51,32 @@ public class EarthquakeServiceImpl implements EarthquakeService {
         List<Earthquake> earthquakes = response.features()
                 .stream()
                 .filter(Objects::nonNull)
-                .map(Feature::properties)
+                .map(feature -> {
+                    Properties properties = feature.properties();
+                    Geometry geometry = feature.geometry();
+
+                    if (properties == null ||
+                            properties.magnitude() == null ||
+                            properties.magType() == null ||
+                            properties.place() == null ||
+                            properties.title() == null ||
+                            properties.time() == null ||
+                            geometry == null ||
+                            geometry.coordinates() == null ||
+                            geometry.coordinates().size() < 2) {
+                        return null;
+                    }
+
+                    Earthquake earthquake = mapper.toEntity(properties);
+
+                    List<Double> coordinates = geometry.coordinates();
+
+                    earthquake.setLongitude(coordinates.get(0));
+                    earthquake.setLatitude(coordinates.get(1));
+
+                    return earthquake;
+                })
                 .filter(Objects::nonNull)
-                .filter(p ->
-                        p.magnitude() != null &&
-                        p.magType() != null &&
-                        p.place() != null &&
-                        p.title() != null &&
-                        p.time() != null
-                )
-                .map(mapper::toEntity)
                 .toList();
 
         earthquakeRepository.saveAll(earthquakes);

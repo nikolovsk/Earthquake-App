@@ -6,5 +6,7 @@ public record EarthquakeDto(
         String magType,
         String place,
         String title,
-        Long time
+        Long time,
+        Double latitude,
+        Double longitude
 ) {}
